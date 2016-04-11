@@ -116,6 +116,13 @@ print("[1] = \(mathArrayOp([1], op: avg))")
 print("[2, 2, 2] = \(mathArrayOp([2, 2, 2], op: avg))")
 
 /* Points */
+
+enum ParamError: ErrorType {
+    case TwoDimensionalPointsOnly
+    case PointsAreDouble
+
+}
+
 func addTuplePoints (p1: (x: Int, y: Int), p2: (x: Int, y: Int)) -> (Int, Int) {
     return (p1.x + p2.x, p1.y + p2.y)
 }
@@ -124,38 +131,111 @@ func subtractTuplePoints (p1: (x: Int, y: Int), p2: (x: Int, y: Int)) -> (Int, I
     return (p1.x - p2.x, p1.y - p2.y)
 }
 
-func addDictPoints(p1 : [Int: Int]?, p2 : [Int: Int]?) -> [Int: Int] {
-    var result: [Int: Int]? = [:]
-    var newX = 0
-    var newY = 0
-    for (x, y) in p1!{
-        newX = x
-        newY = y
+func addDictPoints(p1: [String: Int]?, p2: [String: Int]?) throws -> [String: Int]? {
+    // Sending in Doubles instead of Ints
+    if (p1 == nil && p2 == nil) {
+        throw ParamError.PointsAreDouble
+    // Sending in no points
+    } else if (p1!.count == 0 && p2!.count == 0){
+        return ["x": 0, "y": 0]
+    // Sent in more than 2D points
+    } else if (p1!.count > 2 || p2!.count > 2) {
+        throw ParamError.TwoDimensionalPointsOnly
+    // Only send in first point
+    } else if (p1!.count == 2 && p2!.count == 0) {
+        return p1!
+    // Only send in second point
+    } else if (p1!.count == 0 && p2!.count == 2) {
+        return p2!
+    // Sending in one coordinate of first point and no second point
+    } else if (p1!.count == 1 && p2!.count == 0) {
+        if (p1!["x"] == nil) {
+            return ["x": 0, "y": p1!["y"]!]
+        } else {
+            return ["x": p1!["x"]!, "y": 0]
+        }
+    // Sending in no first point and one coordinate of second point
+    } else if (p1!.count == 0 && p2!.count == 1) {
+        if (p2!["x"] == nil) {
+            return ["x": 0, "y": p2!["y"]!]
+        } else {
+            return ["x": p2!["x"]!, "y": 0]
+        }
+    // Sending in one coordinate of first point and normal second point
+    } else if (p1!.count == 1 && p2!.count == 2) {
+        if (p1!["x"] == nil) {
+            return ["x": p2!["x"]!, "y": p1!["y"]! + p2!["y"]!]
+        } else {
+            return ["x": p1!["x"]! + p2!["x"]!, "y": p2!["y"]!]
+        }
+    // Sending in normal first point and no coordinate of second point
+    } else if (p1!.count == 2 && p2!.count == 1) {
+        if (p2!["x"] == nil) {
+            return ["x": p1!["x"]!, "y": p1!["y"]! + p2!["y"]!]
+        } else {
+            return ["x": p1!["x"]! + p2!["x"]!, "y": p1!["y"]!]
+        }
+    // Normal case. Both coordinates of both points
+    } else {
+        var result : [String: Int] = [:]
+        result["x"] = p1!["x"]! + p2!["x"]!
+        result["y"] = p1!["y"]! + p2!["y"]!
+        return result
     }
-    for (x, y) in p2! {
-        newX += x
-        newY += y
-    }
-    result![newX] = newY
-    return result!
 }
 
-func subtractDictPoints (p1 : [Int: Int]?, p2 : [Int: Int]?) -> [Int: Int] {
-    var result: [Int: Int]? = [:]
-    var newX = 0
-    var newY = 0
-    for (x, y) in (p1)! {
-        newX = x
-        newY = y
+func subtractDictPoints(p1: [String: Int]?, p2: [String: Int]?) throws -> [String: Int]? {
+    // Sending in Doubles instead of Ints
+    if (p1 == nil && p2 == nil) {
+        throw ParamError.PointsAreDouble
+        // Sending in no points
+    } else if (p1!.count == 0 && p2!.count == 0){
+        return ["x": 0, "y": 0]
+        // Sent in more than 2D points
+    } else if (p1!.count > 2 || p2!.count > 2) {
+        throw ParamError.TwoDimensionalPointsOnly
+        // Only send in first point
+    } else if (p1!.count == 2 && p2!.count == 0) {
+        return p1!
+        // Only send in second point
+    } else if (p1!.count == 0 && p2!.count == 2) {
+        return p2!
+        // Sending in one coordinate of first point and no second point
+    } else if (p1!.count == 1 && p2!.count == 0) {
+        if (p1!["x"] == nil) {
+            return ["x": 0, "y": p1!["y"]!]
+        } else {
+            return ["x": p1!["x"]!, "y": 0]
+        }
+        // Sending in no first point and one coordinate of second point
+    } else if (p1!.count == 0 && p2!.count == 1) {
+        if (p2!["x"] == nil) {
+            return ["x": 0, "y": -p2!["y"]!]
+        } else {
+            return ["x": -p2!["x"]!, "y": 0]
+        }
+        // Sending in one coordinate of first point and normal second point
+    } else if (p1!.count == 1 && p2!.count == 2) {
+        if (p1!["x"] == nil) {
+            return ["x": -p2!["x"]!, "y": p1!["y"]! - p2!["y"]!]
+        } else {
+            return ["x": p1!["x"]! - p2!["x"]!, "y": -p2!["y"]!]
+        }
+        // Sending in normal first point and no coordinate of second point
+    } else if (p1!.count == 2 && p2!.count == 1) {
+        if (p2!["x"] == nil) {
+            return ["x": p1!["x"]!, "y": p1!["y"]! - p2!["y"]!]
+        } else {
+            return ["x": p1!["x"]! - p2!["x"]!, "y": p1!["y"]!]
+        }
+        // Normal case. Both coordinates of both points
+    } else {
+        var result : [String: Int] = [:]
+        result["x"] = p1!["x"]! - p2!["x"]!
+        result["y"] = p1!["y"]! - p2!["y"]!
+        return result
     }
-    for (x, y) in (p2)! {
-        newX -= x
-        newY -= y
-    }
-    result![newX] = newY
-    return result!
 }
-
 
 // examples - point tuple addition
 print("\nexamples: point addition")
@@ -173,15 +253,29 @@ print("(1,1) - (4,1) = \(subtractTuplePoints((1,1), p2: (4,1)))")
 
 // examples - point dictionary addition
 print("\nexamples: point dictionary addition")
-print("(0,0) + (3,3) = \(addDictPoints([0: 0], p2: [3: 3]))")
-print("(2,4) + (3,3) = \(addDictPoints([2: 4], p2: [3: 3]))")
-print("(1,5) + (2,3) = \(addDictPoints([1: 5], p2: [2: 3]))")
-print("(1,1) + (4,1) = \(addDictPoints([1: 1], p2: [4: 1]))")
+print("(1,1) + (3,3) = \(try addDictPoints(["x": 1, "y": 1], p2: ["x": 3, "y": 3])!)")
+print("(2,4) + (3,3) = \(try addDictPoints(["x": 2, "y": 4], p2: ["x": 3, "y": 3])!)")
+print("(0,0) + (0,0) = \(try addDictPoints([:], p2: [:])!)")
+print("(0,0) + (7,0) = \(try addDictPoints([:], p2: ["x": 7])!)")
+print("(0,0) + (0,7) = \(try addDictPoints([:], p2: ["y": 7])!)")
+print("(7,0) + (0,0) = \(try addDictPoints(["x": 7], p2: [:])!)")
+print("(0,7) + (0,0) = \(try addDictPoints(["y": 7], p2: [:])!)")
+print("(1,0) + (4,1) = \(try addDictPoints(["x": 1], p2: ["x": 4, "y": 1])!)")
+print("(0,1) + (4,1) = \(try addDictPoints(["y": 1], p2: ["x": 4, "y": 1])!)")
+print("(4,1) + (1,0) = \(try addDictPoints(["x": 4, "y": 1], p2: ["x": 1])!)")
+print("(4,1) + (0,1) = \(try addDictPoints(["x": 4, "y": 1], p2: ["y": 1] )!)")
 
 // examples - point dictionary substraction
-print("\nexamples: point dictionary substraction")
-print("(0,0) - (3,3) = \(subtractDictPoints([0: 0], p2: [3: 3]))")
-print("(2,4) - (3,3) = \(subtractDictPoints([2: 4], p2: [3: 3]))")
-print("(1,5) - (2,3) = \(subtractDictPoints([1: 5], p2: [2: 3]))")
-print("(1,1) - (4,1) = \(subtractDictPoints([1: 1], p2: [4: 1]))")
+ print("\nexamples: point dictionary subtraction")
+ print("(1,1) - (3,3) = \(try subtractDictPoints(["x": 1, "y": 1], p2: ["x": 3, "y": 3])!)")
+ print("(2,4) - (3,3) = \(try subtractDictPoints(["x": 2, "y": 4], p2: ["x": 3, "y": 3])!)")
+ print("(0,0) - (0,0) = \(try subtractDictPoints([:], p2: [:])!)")
+ print("(0,0) - (7,0) = \(try subtractDictPoints([:], p2: ["x": 7])!)")
+ print("(0,0) - (0,7) = \(try subtractDictPoints([:], p2: ["y": 7])!)")
+ print("(7,0) - (0,0) = \(try subtractDictPoints(["x": 7], p2: [:])!)")
+ print("(0,7) - (0,0) = \(try subtractDictPoints(["y": 7], p2: [:])!)")
+ print("(1,0) - (4,1) = \(try subtractDictPoints(["x": 1], p2: ["x": 4, "y": 1])!)")
+ print("(0,1) - (4,1) = \(try subtractDictPoints(["y": 1], p2: ["x": 4, "y": 1])!)")
+ print("(4,1) - (1,0) = \(try subtractDictPoints(["x": 4, "y": 1], p2: ["x": 1])!)")
+ print("(4,1) - (0,1) = \(try subtractDictPoints(["x": 4, "y": 1], p2: ["y": 1] )!)")
 

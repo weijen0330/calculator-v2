@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		E207D3181CB6C2E400E0FD24 /* calculator-v2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "calculator-v2"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E207D31B1CB6C2E400E0FD24 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		E207D31B1CB6C2E400E0FD24 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = main.swift; path = "/Users/Wei-Jen/Desktop/INFO 498/calculator-v2/main.swift"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +241,7 @@
 				E207D3211CB6C2E400E0FD24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
